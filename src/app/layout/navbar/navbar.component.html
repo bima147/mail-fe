@@ -1,0 +1,39 @@
+<header class="navbar">
+  <div class="nav-left">
+    <button
+      class="icon-btn"
+      type="button"
+      aria-label="Toggle sidebar"
+      (click)="toggleSidebar.emit()"
+    >
+      ☰
+    </button>
+
+    <div class="brand">
+      <span class="logo">✉️</span>
+      <span class="brand-text">Mail App</span>
+    </div>
+  </div>
+
+  <div class="nav-center">
+    <input class="search" type="text" placeholder="Search mail..." />
+  </div>
+
+  <div class="nav-right">
+    <button class="btn ghost" type="button" (click)="toggleTheme()">
+      {{ theme.current === "dark" ? "☀️ Light" : "🌙 Dark" }}
+    </button>
+
+    <button class="btn ghost" type="button" (click)="openSettings()">
+      Settings
+    </button>
+    <div class="avatar" title="Account">U</div>
+  </div>
+</header>
+
+<!-- right sidebar settings -->
+<app-settings-drawer
+  [(open)]="settingsOpen"
+  [value]="settings"
+  (valueChange)="onSettingsChange($event)"
+></app-settings-drawer>

@@ -1,0 +1,197 @@
+<div class="mail-page">
+  <div class="page-head">
+    <div>
+      <h1>Inbox</h1>
+      <p>Semua email masuk.</p>
+    </div>
+
+    <div class="head-actions">
+      <button class="btn ghost" type="button" (click)="refresh()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+
+      <button class="btn" type="button" (click)="newMail()">
+        <i class="bi bi-plus-lg"></i> New
+      </button>
+    </div>
+  </div>
+
+  <div class="mail-grid">
+    <!-- LIST -->
+    <section class="list">
+      <div class="list-toolbar">
+        <button
+          class="pill"
+          type="button"
+          [class.active]="filter === 'all'"
+          (click)="setFilter('all')"
+        >
+          All
+        </button>
+        <button
+          class="pill"
+          type="button"
+          [class.active]="filter === 'unread'"
+          (click)="setFilter('unread')"
+        >
+          Unread
+        </button>
+        <button
+          class="pill"
+          type="button"
+          [class.active]="filter === 'starred'"
+          (click)="setFilter('starred')"
+        >
+          Starred
+        </button>
+      </div>
+
+      <div class="items">
+        <button
+          class="row"
+          *ngFor="let m of visibleMails"
+          type="button"
+          [class.active]="selected?.id === m.id"
+          [class.unread]="m.unread"
+          (click)="selectMail(m)"
+        >
+          <div class="left">
+            <span
+              class="star"
+              (click)="$event.stopPropagation(); toggleStar(m)"
+            >
+              <i
+                class="bi"
+                [class.bi-star]="!m.starred"
+                [class.bi-star-fill]="m.starred"
+              ></i>
+            </span>
+
+            <div class="meta">
+              <div class="top">
+                <span class="from">{{ m.from }}</span>
+                <span class="time">{{ m.time }}</span>
+              </div>
+
+              <div class="subject">{{ m.subject }}</div>
+              <div class="preview">{{ m.preview }}</div>
+            </div>
+          </div>
+
+          <div class="right">
+            <span class="tag" *ngIf="m.tag">{{ m.tag }}</span>
+
+            <!-- Hover actions -->
+            <div class="row-actions" (click)="$event.stopPropagation()">
+              <!-- toggle read/unread -->
+              <button
+                class="icon-btn"
+                type="button"
+                [title]="m.unread ? 'Mark as read' : 'Mark as unread'"
+                (click)="m.unread ? markAsRead(m) : markAsUnread(m)"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="m.unread ? 'bi-envelope-open' : 'bi-circle-fill'"
+                ></i>
+              </button>
+
+              <button
+                class="icon-btn"
+                type="button"
+                title="Trash"
+                (click)="moveItemToTrash(m)"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </button>
+
+        <div class="empty-list" *ngIf="visibleMails.length === 0">
+          Tidak ada email untuk filter ini.
+        </div>
+      </div>
+    </section>
+
+    <!-- DETAIL -->
+    <section class="detail">
+      <ng-container *ngIf="selected; else empty">
+        <div class="detail-head">
+          <div>
+            <div class="detail-subject">{{ selected.subject }}</div>
+            <div class="detail-from">From: {{ selected.from }}</div>
+          </div>
+
+          <div class="detail-actions">
+            <button class="btn ghost" type="button" (click)="reply()">
+              <i class="bi bi-reply"></i> Reply
+            </button>
+
+            <button class="btn ghost" type="button" (click)="forward()">
+              <i class="bi bi-forward"></i> Forward
+            </button>
+
+            <button
+              class="btn danger"
+              type="button"
+              (click)="moveSelectedToTrash()"
+            >
+              <i class="bi bi-trash"></i> Trash
+            </button>
+          </div>
+        </div>
+
+        <div class="detail-body">
+          <pre class="body-text">{{ selected.body }}</pre>
+
+          <div class="detail-footer">
+            <button
+              class="btn ghost"
+              type="button"
+              *ngIf="selected.unread"
+              (click)="markAsRead(selected)"
+            >
+              <i class="bi bi-envelope-open"></i> Mark as read
+            </button>
+
+            <button
+              class="btn ghost"
+              type="button"
+              *ngIf="!selected.unread"
+              (click)="markAsUnread(selected)"
+            >
+              <i class="bi bi-envelope"></i> Mark as unread
+            </button>
+
+            <button
+              class="btn ghost"
+              type="button"
+              (click)="toggleStar(selected)"
+            >
+              <i
+                class="bi"
+                [class.bi-star]="!selected.starred"
+                [class.bi-star-fill]="selected.starred"
+              ></i>
+              {{ selected.starred ? "Unstar" : "Star" }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty">
+          <div class="icon"><i class="bi bi-inbox"></i></div>
+          <div class="title">Pilih email</div>
+          <div class="muted">
+            Klik salah satu email di sebelah kiri untuk melihat detail.
+          </div>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" *ngIf="toast">{{ toast }}</div>
+</div>

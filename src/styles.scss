@@ -1,0 +1,64 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* ===== FULL SCREEN RESET ===== */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  overflow: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* ===== THEME TOKENS ===== */
+/* Default = dark */
+:root {
+  --bg: #0b1020;
+  --panel: rgba(18, 26, 51, 0.75);
+  --panel-soft: rgba(18, 26, 51, 0.35);
+  --panel-2: rgba(15, 22, 48, 0.7);
+
+  --text: #e7eaff;
+  --muted: #aab1d6;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  --bg-grad-1: rgba(120, 120, 255, 0.18);
+  --bg-grad-2: rgba(255, 120, 200, 0.12);
+}
+
+/* Light theme override */
+:root[data-theme="light"] {
+  --bg: #f6f7fb;
+  --panel: rgba(255, 255, 255, 0.75);
+  --panel-soft: rgba(255, 255, 255, 0.55);
+  --panel-2: rgba(245, 246, 252, 0.95);
+
+  --text: #0b1220;
+  --muted: #475569;
+
+  --border: rgba(15, 23, 42, 0.12);
+  --border-strong: rgba(15, 23, 42, 0.22);
+
+  --shadow: 0 10px 30px rgba(2, 6, 23, 0.1);
+
+  --bg-grad-1: rgba(99, 102, 241, 0.12);
+  --bg-grad-2: rgba(236, 72, 153, 0.1);
+}

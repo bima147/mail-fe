@@ -1,0 +1,31 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <nav class="menu">
+    <a
+      class="item"
+      *ngFor="let item of topItems"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      [title]="collapsed ? item.label : null"
+    >
+      <span class="icon" aria-hidden="true">
+        <i class="bi" [ngClass]="item.iconClass"></i>
+      </span>
+      <span class="label">{{ item.label }}</span>
+    </a>
+
+    <div class="divider"></div>
+
+    <a
+      class="item"
+      *ngFor="let item of bottomItems"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      [title]="collapsed ? item.label : null"
+    >
+      <span class="icon" aria-hidden="true">
+        <i class="bi" [ngClass]="item.iconClass"></i>
+      </span>
+      <span class="label">{{ item.label }}</span>
+    </a>
+  </nav>
+</aside>

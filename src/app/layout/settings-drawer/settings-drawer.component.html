@@ -1,0 +1,181 @@
+<!-- Backdrop -->
+<div class="backdrop" *ngIf="open" (click)="close()"></div>
+
+<!-- Drawer -->
+<aside class="drawer" [class.open]="open" (click)="$event.stopPropagation()">
+  <header class="head">
+    <div class="title">Quick Settings</div>
+    <button class="icon" type="button" (click)="close()" aria-label="Close">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </header>
+
+  <div class="content">
+    <button class="big-link" type="button">See more settings</button>
+
+    <!-- Avatar display -->
+    <section class="section">
+      <div class="row">
+        <div>
+          <div class="h">Mail List Avatar Display</div>
+        </div>
+
+        <label class="switch">
+          <input
+            type="checkbox"
+            [checked]="value.avatarDisplay"
+            (change)="toggleAvatar()"
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- List density -->
+    <section class="section">
+      <div class="h">List density</div>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="density"
+          [checked]="value.listDensity === 'standard'"
+          (change)="patch({ listDensity: 'standard' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Standard</div>
+          <div class="preview">
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="density"
+          [checked]="value.listDensity === 'compact'"
+          (change)="patch({ listDensity: 'compact' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Compact</div>
+          <div class="preview compact">
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+          </div>
+        </div>
+      </label>
+    </section>
+
+    <!-- List view -->
+    <section class="section">
+      <div class="h">List view</div>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="view"
+          [checked]="value.listView === 'three'"
+          (change)="patch({ listView: 'three' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Three Columns</div>
+          <div class="preview columns three">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="view"
+          [checked]="value.listView === 'two'"
+          (change)="patch({ listView: 'two' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Two Columns</div>
+          <div class="preview columns two"><span></span><span></span></div>
+        </div>
+      </label>
+    </section>
+
+    <!-- Abstract -->
+    <section class="section">
+      <div class="h">Show Abstract</div>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="abstract"
+          [checked]="value.abstractMode === 'show'"
+          (change)="patch({ abstractMode: 'show' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Show Summary</div>
+          <div class="preview summary">
+            <div class="p-line"></div>
+            <div class="p-block"></div>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="abstract"
+          [checked]="value.abstractMode === 'hide'"
+          (change)="patch({ abstractMode: 'hide' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Hide Summary</div>
+          <div class="preview summary hide">
+            <div class="p-line"></div>
+            <div class="p-line"></div>
+          </div>
+        </div>
+      </label>
+    </section>
+
+    <!-- Reading mode -->
+    <section class="section">
+      <div class="h">Reading Mode</div>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="reading"
+          [checked]="value.readingMode === 'standard'"
+          (change)="patch({ readingMode: 'standard' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Standard Mode</div>
+        </div>
+      </label>
+
+      <label class="opt">
+        <input
+          type="radio"
+          name="reading"
+          [checked]="value.readingMode === 'comfortable'"
+          (change)="patch({ readingMode: 'comfortable' })"
+        />
+        <span class="radio"></span>
+        <div class="opt-body">
+          <div class="opt-title">Comfortable Mode</div>
+        </div>
+      </label>
+    </section>
+  </div>
+</aside>

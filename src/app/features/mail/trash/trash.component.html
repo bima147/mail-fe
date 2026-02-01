@@ -1,0 +1,66 @@
+<div class="mail-page">
+  <div class="page-head">
+    <div>
+      <h1>Trash</h1>
+      <p>Email yang sudah dihapus.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn danger" type="button">
+        <i class="bi bi-trash3"></i> Empty trash
+      </button>
+    </div>
+  </div>
+
+  <div class="mail-grid">
+    <section class="list">
+      <div class="items">
+        <button
+          class="row"
+          *ngFor="let t of items"
+          type="button"
+          [class.active]="selected?.id === t.id"
+          (click)="selectItem(t)"
+        >
+          <div class="meta">
+            <div class="top">
+              <span class="from">{{ t.from }}</span>
+              <span class="time">{{ t.deletedAt }}</span>
+            </div>
+            <div class="subject">{{ t.subject }}</div>
+            <div class="preview">{{ t.preview }}</div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="detail">
+      <ng-container *ngIf="selected; else empty">
+        <div class="detail-head">
+          <div>
+            <div class="detail-subject">{{ selected.subject }}</div>
+            <div class="detail-from">From: {{ selected.from }}</div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn ghost" type="button">
+              <i class="bi bi-arrow-counterclockwise"></i> Restore
+            </button>
+            <button class="btn danger" type="button">
+              <i class="bi bi-x-octagon"></i> Delete forever
+            </button>
+          </div>
+        </div>
+        <div class="detail-body">
+          <p class="muted">{{ selected.preview }}</p>
+        </div>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty">
+          <div class="icon"><i class="bi bi-trash"></i></div>
+          <div class="title">Trash kosong</div>
+          <div class="muted">Tidak ada email yang dipilih.</div>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>

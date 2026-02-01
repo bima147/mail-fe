@@ -1,0 +1,58 @@
+<div class="mail-page">
+  <div class="page-head">
+    <div>
+      <h1>Sent</h1>
+      <p>Email yang sudah kamu kirim.</p>
+    </div>
+  </div>
+
+  <div class="mail-grid">
+    <section class="list">
+      <div class="items">
+        <button
+          class="row"
+          *ngFor="let m of mails"
+          type="button"
+          [class.active]="selected?.id === m.id"
+          (click)="selectMail(m)"
+        >
+          <div class="meta">
+            <div class="top">
+              <span class="from">To: {{ m.to }}</span>
+              <span class="time">{{ m.time }}</span>
+            </div>
+            <div class="subject">{{ m.subject }}</div>
+            <div class="preview">{{ m.preview }}</div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="detail">
+      <ng-container *ngIf="selected; else empty">
+        <div class="detail-head">
+          <div>
+            <div class="detail-subject">{{ selected.subject }}</div>
+            <div class="detail-from">To: {{ selected.to }}</div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn ghost" type="button">
+              <i class="bi bi-arrow-repeat"></i> Resend
+            </button>
+          </div>
+        </div>
+        <div class="detail-body">
+          <p class="muted">{{ selected.preview }}</p>
+        </div>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty">
+          <div class="icon"><i class="bi bi-send"></i></div>
+          <div class="title">Pilih email</div>
+          <div class="muted">Klik salah satu email untuk melihat detail.</div>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>

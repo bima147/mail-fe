@@ -1,0 +1,444 @@
+<div class="compose-wrap" (click)="closeAllPopups()">
+  <div class="compose-surface" (click)="$event.stopPropagation()">
+    <!-- FIELDS -->
+    <div class="fields">
+      <div class="row">
+        <div class="label">To</div>
+        <input
+          [(ngModel)]="to"
+          (ngModelChange)="onAnyChange()"
+          autocomplete="email"
+        />
+        <div class="right-links">
+          <button
+            class="link"
+            type="button"
+            (click)="toggleCc(); $event.stopPropagation()"
+          >
+            Cc
+          </button>
+          <button
+            class="link"
+            type="button"
+            (click)="toggleBcc(); $event.stopPropagation()"
+          >
+            Bcc
+          </button>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="showCc">
+        <div class="label">Cc</div>
+        <input
+          [(ngModel)]="cc"
+          (ngModelChange)="onAnyChange()"
+          autocomplete="email"
+        />
+        <div class="right-links"></div>
+      </div>
+
+      <div class="row" *ngIf="showBcc">
+        <div class="label">Bcc</div>
+        <input
+          [(ngModel)]="bcc"
+          (ngModelChange)="onAnyChange()"
+          autocomplete="email"
+        />
+        <div class="right-links"></div>
+      </div>
+
+      <div class="row">
+        <div class="label">Subject</div>
+        <input [(ngModel)]="subject" (ngModelChange)="onAnyChange()" />
+        <div class="right-links"></div>
+      </div>
+
+      <div class="error" *ngIf="error">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+      </div>
+    </div>
+
+    <!-- BODY + ATTACHMENTS -->
+    <div class="content-area">
+      <div class="body-area">
+        <div
+          #editor
+          class="editor"
+          contenteditable="true"
+          [attr.spellcheck]="spellcheckOn"
+          [attr.data-plain]="plainTextMode ? '1' : null"
+          (input)="onEditorInput()"
+        ></div>
+      </div>
+
+      <!-- ATTACHMENTS BOTTOM -->
+      <div class="attach-area" *ngIf="attachments.length > 0">
+        <div class="attach-head">
+          <div class="attach-title">
+            {{ attachments.length }} Attachment{{
+              attachments.length > 1 ? "s" : ""
+            }}
+          </div>
+
+          <button
+            class="attach-download-all"
+            type="button"
+            (click)="downloadAllAttachments()"
+          >
+            Download
+          </button>
+        </div>
+
+        <div class="attach-list">
+          <div class="attach-card" *ngFor="let a of attachments">
+            <button
+              class="thumb"
+              type="button"
+              (click)="openAttachment(a)"
+              [title]="a.name"
+            >
+              <img *ngIf="a.isImage" [src]="a.url" [alt]="a.name" />
+              <div *ngIf="!a.isImage" class="file-icon">
+                <i class="bi bi-file-earmark"></i>
+              </div>
+            </button>
+
+            <div class="meta">
+              <div class="name" [title]="a.name">{{ a.name }}</div>
+              <div class="size">{{ formatBytes(a.size) }}</div>
+
+              <div class="actions">
+                <button
+                  type="button"
+                  class="mini"
+                  (click)="downloadAttachment(a)"
+                >
+                  <i class="bi bi-download"></i> Download
+                </button>
+                <button
+                  type="button"
+                  class="mini ghost"
+                  (click)="removeAttachment(a.id)"
+                >
+                  <i class="bi bi-x"></i> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end attachments -->
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar" (click)="$event.stopPropagation()">
+    <div class="left-actions">
+      <div class="send-group">
+        <button class="send-btn" type="button" (click)="send('Send now')">
+          Send
+        </button>
+        <button
+          class="send-drop"
+          type="button"
+          (click)="sendMenuOpen = !sendMenuOpen; $event.stopPropagation()"
+        >
+          <i class="bi bi-caret-down-fill"></i>
+        </button>
+
+        <div
+          class="menu"
+          *ngIf="sendMenuOpen"
+          (click)="$event.stopPropagation()"
+        >
+          <button type="button" (click)="send('Send now')">Send now</button>
+          <button type="button" (click)="send('Schedule send')">
+            Schedule send
+          </button>
+        </div>
+      </div>
+
+      <button
+        class="icon"
+        type="button"
+        title="Formatting"
+        [class.active]="formatOpen"
+        (click)="toggleFormatBar(); $event.stopPropagation()"
+      >
+        <span class="aa">Aa</span>
+      </button>
+
+      <label class="icon file" title="Attach files">
+        <input
+          type="file"
+          multiple
+          (change)="onAttachFiles($any($event.target).files)"
+        />
+        <i class="bi bi-paperclip"></i>
+      </label>
+
+      <button
+        class="icon"
+        type="button"
+        title="Insert link"
+        (click)="openLink(); $event.stopPropagation()"
+      >
+        <i class="bi bi-link-45deg"></i>
+      </button>
+
+      <button
+        class="icon"
+        type="button"
+        title="Emoji"
+        (click)="toggleEmoji(); $event.stopPropagation()"
+      >
+        <i class="bi bi-emoji-smile"></i>
+      </button>
+
+      <label class="icon file" title="Insert image">
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onAttachFiles($any($event.target).files)"
+        />
+        <i class="bi bi-image"></i>
+      </label>
+
+      <div class="more-wrap">
+        <button
+          class="icon"
+          type="button"
+          title="More"
+          (click)="moreMenuOpen = !moreMenuOpen; $event.stopPropagation()"
+        >
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+
+        <div
+          class="menu"
+          *ngIf="moreMenuOpen"
+          (click)="$event.stopPropagation()"
+        >
+          <button type="button" (click)="doPrint()">Print</button>
+          <button type="button" (click)="toggleSpellcheck()">
+            Check spelling: {{ spellcheckOn ? "On" : "Off" }}
+          </button>
+          <button type="button" (click)="togglePlainTextMode()">
+            Plain text mode: {{ plainTextMode ? "On" : "Off" }}
+          </button>
+        </div>
+      </div>
+
+      <div class="status" *ngIf="draftStatus">{{ draftStatus }}</div>
+    </div>
+
+    <div class="right-actions">
+      <button
+        class="trash"
+        type="button"
+        title="Discard draft"
+        (click)="clearAll()"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+
+    <!-- FORMAT BAR -->
+    <div
+      class="format-bar"
+      *ngIf="formatOpen"
+      (click)="$event.stopPropagation()"
+    >
+      <button class="fbtn" type="button" title="Undo" (click)="cmd('undo')">
+        <i class="bi bi-arrow-counterclockwise"></i>
+      </button>
+      <button class="fbtn" type="button" title="Redo" (click)="cmd('redo')">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+
+      <div class="sep"></div>
+
+      <select
+        class="fselect"
+        [(ngModel)]="fontName"
+        (change)="cmd('fontName', fontName)"
+      >
+        <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
+      </select>
+
+      <select
+        class="fselect small"
+        [(ngModel)]="fontSize"
+        (change)="cmd('fontSize', fontSize)"
+      >
+        <option *ngFor="let s of fontSizes" [value]="s.value">
+          {{ s.label }}
+        </option>
+      </select>
+
+      <div class="sep"></div>
+
+      <button class="fbtn" type="button" title="Bold" (click)="cmd('bold')">
+        <b>B</b>
+      </button>
+      <button class="fbtn" type="button" title="Italic" (click)="cmd('italic')">
+        <i>I</i>
+      </button>
+      <button
+        class="fbtn"
+        type="button"
+        title="Underline"
+        (click)="cmd('underline')"
+      >
+        <u>U</u>
+      </button>
+
+      <div class="sep"></div>
+
+      <label class="color" title="Text color">
+        <input
+          type="color"
+          [(ngModel)]="foreColor"
+          (input)="cmd('foreColor', foreColor)"
+        />
+        <span class="fbtn">A</span>
+      </label>
+
+      <div class="sep"></div>
+
+      <button
+        class="fbtn"
+        type="button"
+        title="Align left"
+        (click)="cmd('justifyLeft')"
+      >
+        <i class="bi bi-text-left"></i>
+      </button>
+      <button
+        class="fbtn"
+        type="button"
+        title="Align center"
+        (click)="cmd('justifyCenter')"
+      >
+        <i class="bi bi-text-center"></i>
+      </button>
+      <button
+        class="fbtn"
+        type="button"
+        title="Align right"
+        (click)="cmd('justifyRight')"
+      >
+        <i class="bi bi-text-right"></i>
+      </button>
+
+      <div class="sep"></div>
+
+      <button
+        class="fbtn"
+        type="button"
+        title="Bulleted list"
+        (click)="cmd('insertUnorderedList')"
+      >
+        <i class="bi bi-list-ul"></i>
+      </button>
+      <button
+        class="fbtn"
+        type="button"
+        title="Numbered list"
+        (click)="cmd('insertOrderedList')"
+      >
+        <i class="bi bi-list-ol"></i>
+      </button>
+    </div>
+
+    <!-- LINK POPOVER -->
+    <div class="popover" *ngIf="linkOpen" (click)="$event.stopPropagation()">
+      <div class="pop-title">Insert link</div>
+      <input [(ngModel)]="linkText" placeholder="Text (optional)" />
+      <input [(ngModel)]="linkUrl" placeholder="URL (https://...)" />
+      <div class="pop-actions">
+        <button class="btn ghost" type="button" (click)="linkOpen = false">
+          Cancel
+        </button>
+        <button class="btn" type="button" (click)="insertLink()">Insert</button>
+      </div>
+    </div>
+
+    <!-- EMOJI POPOVER -->
+    <div
+      class="popover emoji"
+      *ngIf="emojiOpen"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="pop-title">Emoji</div>
+      <div class="emoji-grid">
+        <button type="button" *ngFor="let e of emojis" (click)="addEmoji(e)">
+          {{ e }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE MODAL -->
+  <div
+    class="modal-backdrop"
+    *ngIf="scheduleOpen"
+    (click)="closeSchedule()"
+  ></div>
+  <div class="modal" *ngIf="scheduleOpen" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title"><i class="bi bi-clock"></i> Schedule send</div>
+      <button
+        class="icon-x"
+        type="button"
+        (click)="closeSchedule()"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="preset-row">
+        <button class="pill" type="button" (click)="setPreset(1)">
+          +1 hour
+        </button>
+        <button class="pill" type="button" (click)="setPreset(3)">
+          +3 hours
+        </button>
+        <button class="pill" type="button" (click)="setPreset(24)">
+          Tomorrow
+        </button>
+      </div>
+
+      <div class="grid">
+        <label>
+          <span>Date</span>
+          <input type="date" [(ngModel)]="scheduleDate" />
+        </label>
+
+        <label>
+          <span>Time</span>
+          <input type="time" [(ngModel)]="scheduleTime" />
+        </label>
+      </div>
+
+      <div class="hint">
+        <i class="bi bi-info-circle"></i>
+        Schedule akan mengirim email otomatis pada waktu yang kamu pilih.
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn ghost" type="button" (click)="closeSchedule()">
+        Cancel
+      </button>
+      <button class="btn" type="button" (click)="scheduleSend()">
+        <i class="bi bi-clock-history"></i> Schedule
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" *ngIf="toast">{{ toast }}</div>
+</div>

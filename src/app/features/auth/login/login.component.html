@@ -1,0 +1,53 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="header">
+      <div class="logo">✉️</div>
+      <div>
+        <h1>Login</h1>
+        <p>Masuk untuk membuka inbox kamu.</p>
+      </div>
+    </div>
+
+    <form (ngSubmit)="submit()" class="form">
+      <label>
+        <span>Email</span>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="nama@email.com"
+          autocomplete="email"
+        />
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+      </label>
+
+      <div class="row">
+        <label class="remember">
+          <input type="checkbox" name="remember" [(ngModel)]="remember" />
+          <span>Remember me</span>
+        </label>
+
+        <a class="link" href="javascript:void(0)">Lupa password?</a>
+      </div>
+
+      <button class="btn" type="submit">Masuk</button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+      <p class="hint">
+        Belum punya akun?
+        <a class="link" href="javascript:void(0)">Daftar</a>
+      </p>
+    </form>
+  </div>
+</div>

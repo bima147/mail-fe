@@ -1,0 +1,66 @@
+<div class="mail-page">
+  <div class="page-head">
+    <div>
+      <h1>Drafts</h1>
+      <p>Draf yang belum kamu kirim.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn" type="button">
+        <i class="bi bi-pencil-square"></i> Continue writing
+      </button>
+    </div>
+  </div>
+
+  <div class="mail-grid">
+    <section class="list">
+      <div class="items">
+        <button
+          class="row"
+          *ngFor="let d of drafts"
+          type="button"
+          [class.active]="selected?.id === d.id"
+          (click)="selectDraft(d)"
+        >
+          <div class="meta">
+            <div class="top">
+              <span class="from">To: {{ d.to }}</span>
+              <span class="time">{{ d.updated }}</span>
+            </div>
+            <div class="subject">{{ d.subject }}</div>
+            <div class="preview">{{ d.preview }}</div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="detail">
+      <ng-container *ngIf="selected; else empty">
+        <div class="detail-head">
+          <div>
+            <div class="detail-subject">{{ selected.subject }}</div>
+            <div class="detail-from">To: {{ selected.to }}</div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn ghost" type="button">
+              <i class="bi bi-send"></i> Send
+            </button>
+            <button class="btn ghost" type="button">
+              <i class="bi bi-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+        <div class="detail-body">
+          <p class="muted">{{ selected.preview }}</p>
+        </div>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="empty">
+          <div class="icon"><i class="bi bi-file-earmark-text"></i></div>
+          <div class="title">Pilih draft</div>
+          <div class="muted">Klik draft untuk lanjut menulis.</div>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>
